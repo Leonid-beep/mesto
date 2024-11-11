@@ -1,12 +1,17 @@
 let profilePopup = document.querySelector('.popup_type_edit');
 let cardPopup = document.querySelector('.popup_type_new-card');
-let imagePopup = document.querySelector('.popup_type_image');
 let editButton = document.querySelector('.profile__edit-button');
 let addButton = document.querySelector('.profile__add-button');
 let closeButtonEdit = profilePopup.querySelector('.popup__close');
 let closeButtonCard = cardPopup.querySelector('.popup__close');
 const nameInput = document.querySelector('.popup__input_type_name');
 const jobInput = document.querySelector('.popup__input_type_description');
+
+let popup = document.querySelectorAll('.popup');
+
+popup.forEach((item) => {
+  item.classList.add('popup_is-animated');
+})
 
 function openModal(popup) {
     popup.classList.add('popup_is-opened');
