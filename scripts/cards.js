@@ -26,7 +26,7 @@ const initialCards = [
 ];
 
 
-let placesList = document.querySelector('.places__list')
+let placesList = document.querySelector('.places__list');
 
 function createCard(cardName, cardLink) {
   const cardTemplate = document.querySelector('#card-template').content;
