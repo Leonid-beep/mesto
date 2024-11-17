@@ -61,6 +61,12 @@ function createCard(cardName, cardLink) {
   closeButtonImage.addEventListener('click', function () {
     closeModal(imagePopup);
   });
+  //Закрытие попапа картинки нажатием на оверлэй
+  imagePopup.addEventListener("click", (evt) => {
+    if (evt.currentTarget === evt.target) {
+      closeModal(imagePopup)
+    }
+  });
   return cardElement;
 }
 
