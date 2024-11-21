@@ -16,10 +16,12 @@ import '../pages/index.css';
 import './validate.js';
 import './cards.js';
 import './modal.js';
+import './api.js';
 
 import {enableValidation, toggleButtonState} from './validate.js';
 import {openModal, closeModal, closeByEsc} from './modal.js';
 import {placesList, createCard} from './cards.js'
+import {getProfileInfo, getInitialCards, editProfile, addNewCard} from './api.js'
 
 const profilePopup = document.querySelector('.popup_type_edit');
 const cardPopup = document.querySelector('.popup_type_new-card');
@@ -63,6 +65,7 @@ function handleProfileFormSubmit(evt) {
     evt.preventDefault();
     document.querySelector('.profile__title').textContent = nameInput.value;
     document.querySelector('.profile__description').textContent = jobInput.value;
+    editProfile(document.querySelector('.profile__title').textContent, document.querySelector('.profile__description').textContent);
     closeModal(profilePopup);
 }
 
@@ -94,6 +97,7 @@ function handlecardFormSubmit(evt) {
     evt.preventDefault();
     const cardName = document.querySelector('.popup__input_type_card-name');
     const cardURL = document.querySelector('.popup__input_type_url');
+    addNewCard(cardName.value, cardURL.value);
     placesList.prepend(createCard(cardName.value, cardURL.value));
     closeModal(cardPopup);
 }
@@ -110,3 +114,5 @@ export const validationSettings = {
 }
 
 enableValidation(validationSettings);
+getProfileInfo();
+getInitialCards();
