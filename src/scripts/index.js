@@ -102,6 +102,8 @@ function handlecardFormSubmit(evt) {
     closeModal(cardPopup);
 }
 
+
+
 cardFormElement.addEventListener('submit', handlecardFormSubmit);
 
 export const validationSettings = {

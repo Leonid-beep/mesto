@@ -7,6 +7,9 @@
 @import url('../blocks/profile/profile.css');
 @import url('../blocks/places/places.css');
 @import url('../blocks/card/card.css');
+@import url('../blocks/card/__likeandcounter/card__likeandcounter.css');
+@import url('../blocks/card/__counter/card__counter.css');
+@import url('../blocks/card/card.css');
 @import url('../blocks/popup/popup.css');
 @import url('../blocks/popup/_is-animated/popup_is-animated.css');
 @import url('../blocks/popup/_is-opened/popup_is-opened.css');

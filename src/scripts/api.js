@@ -24,9 +24,6 @@ export const getProfileInfo = () => {
       const profileAvatar = document.querySelector('.profile__image'),
       style = profileAvatar.currentStyle || window.getComputedStyle(profileAvatar, false),
       bi = style.backgroundImage.slice(4, -1).replace(/"/g, result.avatar);
-    })
-    .catch((err) => {
-      console.log(err);
     });
 }
 
@@ -42,11 +39,8 @@ export const getInitialCards = () => {
     })
     .then((result) => {
       result.forEach(function (item) {
-        placesList.append(createCard(item.name, item.link));
+        placesList.append(createCard(item.name, item.link, item.likes.length, item._id));
       });
-    })
-    .catch((err) => {
-      console.log(err);
     });
 }
 
@@ -68,9 +62,6 @@ export const editProfile = (name, about) => {
     })
     .then((result) => {
       console.log('Профиль обновлен успешно:', result);
-    })
-    .catch((err) => {
-      console.log(err);
     });
 }
 
@@ -91,8 +82,21 @@ export const addNewCard = (name, link) => {
     })
     .then((result) => {
       console.log('Карточка успешно добавлена:', result);
+    });
+}
+
+export const deleteCard = (cardId) => {
+  return fetch(`${config.baseUrl}/cards/${cardId}`, {
+    method: 'DELETE',
+    headers: config.headers
+  })
+    .then(res => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
     })
-    .catch((err) => {
-      console.log(err);
+    .then((result) => {
+      console.log('Карточка успешно удалена:', result);
     });
 }

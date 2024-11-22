@@ -1,4 +1,5 @@
 import {openModal, closeModal} from './modal.js';
+import {deleteCard} from './api.js';
 
 export let placesList = document.querySelector('.places__list');
 const popupImageAttr = document.querySelector('.popup__image');
@@ -7,10 +8,12 @@ const imagePopup = document.querySelector('.popup_type_image');
 const closeButtonImage = imagePopup.querySelector('.popup__close');
 
 //Функция создания карточки
-export function createCard(cardName, cardLink) {
+export function createCard(cardName, cardLink, cardLikes, cardID) {
   const cardTemplate = document.querySelector('#card-template').content;
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const cardImage = cardElement.querySelector('.card__image');
+  const cardLikeCounter = cardElement.querySelector('.card__counter');
+  cardLikeCounter.textContent = cardLikes;
   cardElement.querySelector('.card__image').src = cardLink;
   cardElement.querySelector('.card__image').alt = cardName;
   cardElement.querySelector('.card__title').textContent = cardName;
@@ -22,6 +25,7 @@ export function createCard(cardName, cardLink) {
   });
   //Кнопка удаления карточки
   deletedButton.addEventListener("click", function() {
+    deleteCard(cardID);
     deletedButton.closest('.places__item').remove();
   });
   //Обработчик нажатия на карточку
