@@ -8,7 +8,7 @@ export function openModal(popup) {
 
 //Функция закрытия модального окна
 export function closeModal(popup) {
-  if (popup.classList.contains('popup_type_edit') || popup.classList.contains('popup_type_new-card')) {
+  if (popup.classList.contains('popup_type_edit') || popup.classList.contains('popup_type_new-card') || popup.classList.contains('popup_type_avatar')) {
     resetForm(popup);
   }
   popup.classList.remove('popup_is-opened');

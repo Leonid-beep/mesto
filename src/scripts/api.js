@@ -24,9 +24,8 @@ export const getProfileInfo = () => {
       currentUserId = result._id;
       document.querySelector('.profile__title').textContent = result.name;
       document.querySelector('.profile__description').textContent = result.about;
-      const profileAvatar = document.querySelector('.profile__image'),
-      style = profileAvatar.currentStyle || window.getComputedStyle(profileAvatar, false),
-      bi = style.backgroundImage.slice(4, -1).replace(/"/g, result.avatar);
+      const profileAvatar = document.querySelector('.profile__image');
+      profileAvatar.style.backgroundImage = `url(${result.avatar})`;
     });
 }
 
@@ -90,7 +89,6 @@ export const addNewCard = (name, link) => {
     })
     .then((result) => {
       console.log('Карточка успешно добавлена:', result);
-      return result;
     });
 }
 
@@ -139,5 +137,24 @@ export const deleteLikeCard = (cardId) => {
     })
     .then((result) => {
       console.log('Лайк убран:', result);
+    });
+}
+
+export const updateAvatar = (avatar) => {
+  return fetch(`${config.baseUrl}/users/me/avatar`, {
+    method: 'PATCH',
+    headers: config.headers,
+    body: JSON.stringify({
+      avatar: avatar
+    })
+  })
+    .then(res => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
+    })
+    .then((result) => {
+      console.log('Аватар обновлен:', result);
     });
 }
