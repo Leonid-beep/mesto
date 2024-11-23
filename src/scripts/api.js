@@ -89,6 +89,7 @@ export const addNewCard = (name, link) => {
     })
     .then((result) => {
       console.log('Карточка успешно добавлена:', result);
+      return result;
     });
 }
 
