@@ -38,6 +38,9 @@ popup.forEach((item) => {
   item.classList.add('popup_is-animated');
 })
 
+getProfileInfo();
+getInitialCards();
+
 // Обработчик нажатия на кнопку редактирования профиля
 editButton.addEventListener('click', function() {
   nameInput.value = document.querySelector('.profile__title').textContent;
@@ -92,16 +95,17 @@ cardPopup.addEventListener("click", (evt) => {
 });
 
 const cardFormElement = cardPopup.querySelector('.popup__form');
+
+
 // Добавление новой карточки
-function handlecardFormSubmit(evt) {
+async function handlecardFormSubmit(evt) {
     evt.preventDefault();
     const cardName = document.querySelector('.popup__input_type_card-name');
     const cardURL = document.querySelector('.popup__input_type_url');
-    addNewCard(cardName.value, cardURL.value);
-    placesList.prepend(createCard(cardName.value, cardURL.value));
+    const result = await addNewCard(cardName.value, cardURL.value);
+    placesList.prepend(createCard(cardName.value, cardURL.value, result.likes.length, result._id, result.owner._id, result.likes.map(like => like._id)));
     closeModal(cardPopup);
 }
-
 
 
 cardFormElement.addEventListener('submit', handlecardFormSubmit);
@@ -116,5 +120,3 @@ export const validationSettings = {
 }
 
 enableValidation(validationSettings);
-getProfileInfo();
-getInitialCards();

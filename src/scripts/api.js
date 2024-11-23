@@ -8,6 +8,8 @@ const config = {
   }
 }
 
+export let currentUserId = null;
+
 export const getProfileInfo = () => {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers
@@ -19,6 +21,7 @@ export const getProfileInfo = () => {
       return Promise.reject(`Ошибка: ${res.status}`);
     })
     .then((result) => {
+      currentUserId = result._id;
       document.querySelector('.profile__title').textContent = result.name;
       document.querySelector('.profile__description').textContent = result.about;
       const profileAvatar = document.querySelector('.profile__image'),
@@ -39,7 +42,12 @@ export const getInitialCards = () => {
     })
     .then((result) => {
       result.forEach(function (item) {
-        placesList.append(createCard(item.name, item.link, item.likes.length, item._id));
+        const cardElement = createCard(item.name, item.link, item.likes.length, item._id, item.owner._id, item.likes.map(like => like._id));
+        const deleteButton = cardElement.querySelector('.card__delete-button');
+        if (item.owner._id !== currentUserId) {
+          deleteButton.hidden = true;
+        }
+        placesList.append(cardElement);
       });
     });
 }
@@ -82,6 +90,7 @@ export const addNewCard = (name, link) => {
     })
     .then((result) => {
       console.log('Карточка успешно добавлена:', result);
+      return result;
     });
 }
 
@@ -98,5 +107,37 @@ export const deleteCard = (cardId) => {
     })
     .then((result) => {
       console.log('Карточка успешно удалена:', result);
+    });
+}
+
+export const likeCard = (cardId) => {
+  return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+    method: 'PUT',
+    headers: config.headers
+  })
+    .then(res => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
+    })
+    .then((result) => {
+      console.log('Лайк поставлен:', result);
+    });
+}
+
+export const deleteLikeCard = (cardId) => {
+  return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+    method: 'DELETE',
+    headers: config.headers
+  })
+    .then(res => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
+    })
+    .then((result) => {
+      console.log('Лайк убран:', result);
     });
 }

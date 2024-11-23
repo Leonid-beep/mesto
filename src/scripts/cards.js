@@ -1,6 +1,5 @@
 import {openModal, closeModal} from './modal.js';
-import {deleteCard} from './api.js';
-
+import {deleteCard, likeCard, deleteLikeCard, currentUserId} from './api.js';
 export let placesList = document.querySelector('.places__list');
 const popupImageAttr = document.querySelector('.popup__image');
 const popupCaption = document.querySelector('.popup__caption');
@@ -8,7 +7,7 @@ const imagePopup = document.querySelector('.popup_type_image');
 const closeButtonImage = imagePopup.querySelector('.popup__close');
 
 //Функция создания карточки
-export function createCard(cardName, cardLink, cardLikes, cardID) {
+export function createCard(cardName, cardLink, cardLikes, cardID, ownerId, likedBy) {
   const cardTemplate = document.querySelector('#card-template').content;
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const cardImage = cardElement.querySelector('.card__image');
@@ -19,9 +18,21 @@ export function createCard(cardName, cardLink, cardLikes, cardID) {
   cardElement.querySelector('.card__title').textContent = cardName;
   const likedButton = cardElement.querySelector('.card__like-button');
   const deletedButton = cardElement.querySelector('.card__delete-button');
+  if (likedBy.includes(currentUserId)) {
+    likedButton.classList.add('card__like-button_is-active');
+  }
   //Поставить или убрать лайк
   likedButton.addEventListener("click", function() {
-    likedButton.classList.toggle('card__like-button_is-active');
+    if (likedButton.classList.contains('card__like-button_is-active')) {
+      deleteLikeCard(cardID);
+      cardLikeCounter.textContent = parseInt(cardLikeCounter.textContent) - 1;
+      likedButton.classList.remove('card__like-button_is-active');
+    }
+    else {
+      likeCard(cardID);
+      cardLikeCounter.textContent = parseInt(cardLikeCounter.textContent) + 1;
+      likedButton.classList.add('card__like-button_is-active');
+    }
   });
   //Кнопка удаления карточки
   deletedButton.addEventListener("click", function() {
