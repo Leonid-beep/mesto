@@ -8,7 +8,6 @@ const config = {
   }
 }
 
-export let currentUserId = null;
 
 export const getProfileInfo = () => {
   return fetch(`${config.baseUrl}/users/me`, {
@@ -19,13 +18,6 @@ export const getProfileInfo = () => {
         return res.json();
       }
       return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .then((result) => {
-      currentUserId = result._id;
-      document.querySelector('.profile__title').textContent = result.name;
-      document.querySelector('.profile__description').textContent = result.about;
-      const profileAvatar = document.querySelector('.profile__image');
-      profileAvatar.style.backgroundImage = `url(${result.avatar})`;
     });
 }
 
@@ -38,16 +30,6 @@ export const getInitialCards = () => {
         return res.json();
       }
       return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .then((result) => {
-      result.forEach(function (item) {
-        const cardElement = createCard(item.name, item.link, item.likes.length, item._id, item.owner._id, item.likes.map(like => like._id));
-        const deleteButton = cardElement.querySelector('.card__delete-button');
-        if (item.owner._id !== currentUserId) {
-          deleteButton.hidden = true;
-        }
-        placesList.append(cardElement);
-      });
     });
 }
 
@@ -66,9 +48,6 @@ export const editProfile = (name, about) => {
         return res.json();
       }
       return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .then((result) => {
-      console.log('Профиль обновлен успешно:', result);
     });
 }
 
@@ -86,10 +65,6 @@ export const addNewCard = (name, link) => {
         return res.json();
       }
       return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .then((result) => {
-      console.log('Карточка успешно добавлена:', result);
-      return result;
     });
 }
 
@@ -103,9 +78,6 @@ export const deleteCard = (cardId) => {
         return res.json();
       }
       return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .then((result) => {
-      console.log('Карточка успешно удалена:', result);
     });
 }
 
@@ -119,9 +91,6 @@ export const likeCard = (cardId) => {
         return res.json();
       }
       return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .then((result) => {
-      console.log('Лайк поставлен:', result);
     });
 }
 
@@ -135,9 +104,6 @@ export const deleteLikeCard = (cardId) => {
         return res.json();
       }
       return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .then((result) => {
-      console.log('Лайк убран:', result);
     });
 }
 
@@ -154,8 +120,5 @@ export const updateAvatar = (avatar) => {
         return res.json();
       }
       return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .then((result) => {
-      console.log('Аватар обновлен:', result);
     });
 }

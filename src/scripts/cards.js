@@ -1,5 +1,6 @@
 import {openModal, closeModal} from './modal.js';
-import {deleteCard, likeCard, deleteLikeCard, currentUserId} from './api.js';
+import {deleteCard, likeCard, deleteLikeCard} from './api.js';
+import {currentUserId} from './index.js';
 export let placesList = document.querySelector('.places__list');
 const popupImageAttr = document.querySelector('.popup__image');
 const popupCaption = document.querySelector('.popup__caption');
@@ -24,19 +25,37 @@ export function createCard(cardName, cardLink, cardLikes, cardID, ownerId, liked
   //Поставить или убрать лайк
   likedButton.addEventListener("click", function() {
     if (likedButton.classList.contains('card__like-button_is-active')) {
-      deleteLikeCard(cardID);
+      deleteLikeCard(cardID)
+        .then((result) => {
+          return result;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       cardLikeCounter.textContent = parseInt(cardLikeCounter.textContent) - 1;
       likedButton.classList.remove('card__like-button_is-active');
     }
     else {
-      likeCard(cardID);
+      likeCard(cardID)
+        .then((result) => {
+          return result;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       cardLikeCounter.textContent = parseInt(cardLikeCounter.textContent) + 1;
       likedButton.classList.add('card__like-button_is-active');
     }
   });
   //Кнопка удаления карточки
   deletedButton.addEventListener("click", function() {
-    deleteCard(cardID);
+    deleteCard(cardID)
+      .then((result) => {
+        return result;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     deletedButton.closest('.places__item').remove();
   });
   //Обработчик нажатия на карточку

@@ -35,14 +35,49 @@ const closeButtonAvatar = avatarPopup.querySelector('.popup__close');
 const nameInput = document.querySelector('.popup__input_type_name');
 const jobInput = document.querySelector('.popup__input_type_description');
 
+export let currentUserId = null;
 export let popup = document.querySelectorAll('.popup');
 //Добавление анимации каждой карточке
 popup.forEach((item) => {
   item.classList.add('popup_is-animated');
 })
 
-getProfileInfo();
-getInitialCards();
+getProfileInfo()
+  .then((result) => {
+    currentUserId = result._id;
+    document.querySelector('.profile__title').textContent = result.name;
+    document.querySelector('.profile__description').textContent = result.about;
+    const profileAvatar = document.querySelector('.profile__image');
+    profileAvatar.style.backgroundImage = `url(${result.avatar})`;
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+getInitialCards()
+  .then((result) => {
+    result.forEach(function (item) {
+      const cardElement = createCard(item.name, item.link, item.likes.length, item._id, item.owner._id, item.likes.map(like => like._id));
+      const deleteButton = cardElement.querySelector('.card__delete-button');
+      if (item.owner._id !== currentUserId) {
+        deleteButton.hidden = true;
+      }
+      placesList.append(cardElement);
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+function handleLoading(button, isLoading, initialText = "Сохранить") {
+  if (isLoading) {
+    button.textContent = "Сохранение...";
+    button.disabled = true;
+  } else {
+    button.textContent = initialText;
+    button.disabled = false;
+  }
+}
 
 // Обработчик нажатия на кнопку редактирования профиля
 editButton.addEventListener('click', function() {
@@ -68,12 +103,24 @@ profilePopup.addEventListener("click", (evt) => {
 const profileFormElement = profilePopup.querySelector('.popup__form');
 // Сохранение данных, введенных в окно редактирования профиля
 function handleProfileFormSubmit(evt) {
-    evt.preventDefault();
-    document.querySelector('.profile__title').textContent = nameInput.value;
-    document.querySelector('.profile__description').textContent = jobInput.value;
-    editProfile(document.querySelector('.profile__title').textContent, document.querySelector('.profile__description').textContent);
-    closeModal(profilePopup);
+  evt.preventDefault();
+  const submitButton = profilePopup.querySelector(validationSettings.submitButtonSelector);
+  handleLoading(submitButton, true);
+  editProfile(nameInput.value, jobInput.value)
+    .then((result) => {
+      document.querySelector('.profile__title').textContent = nameInput.value;
+      document.querySelector('.profile__description').textContent = jobInput.value;
+    })
+    .catch((err) => {
+      console.error("Ошибка при обновлении профиля:", err);
+    })
+    .finally(() => {
+      handleLoading(submitButton, false);
+      closeModal(profilePopup);
+    });
 }
+
+
 
 profileFormElement.addEventListener('submit', handleProfileFormSubmit);
 // Обработчик нажатия на кнопку добавления новой карточки
@@ -101,13 +148,23 @@ const cardFormElement = cardPopup.querySelector('.popup__form');
 
 
 // Добавление новой карточки
-async function handleCardFormSubmit(evt) {
-    evt.preventDefault();
-    const cardName = document.querySelector('.popup__input_type_card-name');
-    const cardURL = document.querySelector('.popup__input_type_first-url');
-    const result = await addNewCard(cardName.value, cardURL.value);
-    placesList.prepend(createCard(cardName.value, cardURL.value, result.likes.length, result._id, result.owner._id, result.likes.map(like => like._id)));
-    closeModal(cardPopup);
+function handleCardFormSubmit(evt) {
+  evt.preventDefault();
+  const cardName = document.querySelector('.popup__input_type_card-name');
+  const cardURL = document.querySelector('.popup__input_type_first-url');
+  const submitButton = cardPopup.querySelector(validationSettings.submitButtonSelector);
+  handleLoading(submitButton, true);
+  addNewCard(cardName.value, cardURL.value)
+    .then((result) => {
+      placesList.prepend(createCard(cardName.value, cardURL.value, result.likes.length, result._id, result.owner._id, result.likes.map(like => like._id)));
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      handleLoading(submitButton, false);
+      closeModal(cardPopup);
+    });
 }
 
 
@@ -137,9 +194,19 @@ function handleAvatarFormSubmit (evt) {
   evt.preventDefault();
   const avatarURL = avatarPopup.querySelector('.popup__input_type_second-url').value;
   const avatarImage = document.querySelector('.profile__image');
-  avatarImage.style.backgroundImage = `url(${avatarURL})`;
-  updateAvatar(avatarURL);
-  closeModal(avatarPopup);
+  const submitButton = avatarPopup.querySelector(validationSettings.submitButtonSelector);
+  handleLoading(submitButton, true);
+  updateAvatar(avatarURL)
+    .then((result) => {
+      avatarImage.style.backgroundImage = `url(${avatarURL})`;
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      handleLoading(submitButton, false);
+      closeModal(avatarPopup);
+    });
 }
 
 avatarFormElement.addEventListener('submit', handleAvatarFormSubmit);
