@@ -19,6 +19,7 @@ export function createCard(cardName, cardLink, cardLikes, cardID, ownerId, liked
   cardElement.querySelector('.card__title').textContent = cardName;
   const likedButton = cardElement.querySelector('.card__like-button');
   const deletedButton = cardElement.querySelector('.card__delete-button');
+  //Проверка на поставленный лайк
   if (likedBy.includes(currentUserId)) {
     likedButton.classList.add('card__like-button_is-active');
   }
