@@ -28,25 +28,23 @@ export function createCard(cardName, cardLink, cardLikes, cardID, ownerId, liked
     if (likedButton.classList.contains('card__like-button_is-active')) {
       deleteLikeCard(cardID)
         .then((result) => {
-          return result;
+          likedButton.classList.remove('card__like-button_is-active');
+          cardLikeCounter.textContent = result.likes.length;
         })
         .catch((err) => {
           console.log(err);
         });
-      cardLikeCounter.textContent = parseInt(cardLikeCounter.textContent) - 1;
-      likedButton.classList.remove('card__like-button_is-active');
     }
     else {
       likeCard(cardID)
         .then((result) => {
-          return result;
+          likedButton.classList.add('card__like-button_is-active');
+          cardLikeCounter.textContent = result.likes.length;
         })
         .catch((err) => {
           console.log(err);
         });
-      cardLikeCounter.textContent = parseInt(cardLikeCounter.textContent) + 1;
-      likedButton.classList.add('card__like-button_is-active');
-    }
+      }
   });
   //Кнопка удаления карточки
   deletedButton.addEventListener("click", function() {

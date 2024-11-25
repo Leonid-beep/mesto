@@ -114,13 +114,14 @@ function handleProfileFormSubmit(evt) {
     .then((result) => {
       document.querySelector('.profile__title').textContent = result.name;
       document.querySelector('.profile__description').textContent = result.about;
+      closeModal(profilePopup);
     })
     .catch((err) => {
-      console.error("Ошибка при обновлении профиля:", err);
+      console.error(err);
+      alert("Не удалось сохранить изменения. Проверьте подключение к интернету или повторите попытку позже.");
     })
     .finally(() => {
       handleLoading(submitButton, false);
-      closeModal(profilePopup);
     });
 }
 
@@ -156,11 +157,17 @@ function handleCardFormSubmit(evt) {
   const cardName = document.querySelector('.popup__input_type_card-name');
   const cardURL = document.querySelector('.popup__input_type_first-url');
   const submitButton = cardPopup.querySelector(validationSettings.submitButtonSelector);
+
+  if (!navigator.onLine) {
+    alert('Нет подключения к интернету. Проверьте соединение и повторите попытку.');
+    return;
+  }
+
+  handleLoading(submitButton, true);
+
   const image = new Image();
-  image.src = cardURL.value;
-  // Проверка на то, что URL верный
+
   image.onload = () => {
-    handleLoading(submitButton, true);
     addNewCard(cardName.value, cardURL.value)
       .then((result) => {
         placesList.prepend(createCard(
@@ -171,18 +178,23 @@ function handleCardFormSubmit(evt) {
           result.owner._id,
           result.likes.map(like => like._id)
         ));
+        closeModal(cardPopup);
+        cardFormElement.reset();
       })
       .catch((err) => {
         console.log(err);
+        alert("Не удалось добавить картинку. Проверьте подключение к интернету или повторите попытку позже.");
       })
       .finally(() => {
         handleLoading(submitButton, false);
-        closeModal(cardPopup);
       });
   };
   image.onerror = () => {
     alert('Ошибка загрузки картинки. Проверьте URL и повторите попытку.');
+    handleLoading(submitButton, false);
   };
+
+  image.src = cardURL.value;
 }
 
 cardFormElement.addEventListener('submit', handleCardFormSubmit);
@@ -215,27 +227,39 @@ function handleAvatarFormSubmit(evt) {
   const avatarURL = avatarPopup.querySelector('.popup__input_type_second-url').value;
   const avatarImage = document.querySelector('.profile__image');
   const submitButton = avatarPopup.querySelector(validationSettings.submitButtonSelector);
+
+  if (!navigator.onLine) {
+    alert('Нет подключения к интернету. Проверьте соединение и повторите попытку.');
+    return;
+  }
+  handleLoading(submitButton, true);
+
   const image = new Image();
-  image.src = avatarURL;
-  // Проверка на то, что URL верный
+
   image.onload = () => {
-    handleLoading(submitButton, true);
     updateAvatar(avatarURL)
       .then((result) => {
         avatarImage.style.backgroundImage = `url(${avatarURL})`;
+        closeModal(avatarPopup);
+        avatarFormElement.reset();
       })
       .catch((err) => {
         console.log(err);
+        alert("Не удалось изменить аватар. Проверьте подключение к интернету или повторите попытку позже.");
       })
       .finally(() => {
         handleLoading(submitButton, false);
-        closeModal(avatarPopup);
       });
   };
+
   image.onerror = () => {
     alert('Ошибка загрузки аватара. Проверьте URL и повторите попытку.');
+    handleLoading(submitButton, false);
   };
+
+  image.src = avatarURL;
 }
+
 
 
 avatarFormElement.addEventListener('submit', handleAvatarFormSubmit);
