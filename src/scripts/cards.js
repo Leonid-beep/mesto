@@ -50,12 +50,11 @@ export function createCard(cardName, cardLink, cardLikes, cardID, ownerId, liked
   deletedButton.addEventListener("click", function() {
     deleteCard(cardID)
       .then((result) => {
-        return result;
+        deletedButton.closest('.places__item').remove();
       })
       .catch((err) => {
         console.log(err);
       });
-    deletedButton.closest('.places__item').remove();
   });
   //Обработчик нажатия на карточку
   cardImage.addEventListener("click", function() {
